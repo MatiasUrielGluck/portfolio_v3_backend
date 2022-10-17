@@ -1,4 +1,5 @@
 const tagsModel = require("./model");
+const projectsModel = require("../projects/model");
 
 module.exports = {
   getTags: async () => {
@@ -18,6 +19,15 @@ module.exports = {
       where: {
         name: name,
       },
+    });
+  },
+
+  getTagWithProjectById: async ({ id }) => {
+    return await tagsModel.findOne({
+      where: {
+        id: id,
+      },
+      include: projectsModel
     });
   },
 

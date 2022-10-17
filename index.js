@@ -2,12 +2,15 @@ const express = require("express");
 const app = express();
 
 const sequelize = require("./services/database");
-
 const router = require("./routes");
+
+const associateModels = require('./api/associations')
 
 const port = 3000;
 
 app.use(express.json())
+
+associateModels()
 
 app.use("/api", router);
 

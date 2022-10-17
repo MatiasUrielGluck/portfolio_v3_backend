@@ -1,4 +1,5 @@
 const projectsDao = require("./dao");
+const tagsDao = require("../tags/dao");
 
 module.exports = {
   getProjects: async (req, res) => {
@@ -33,6 +34,94 @@ module.exports = {
     });
   },
 
+  addTag: async (req, res) => {
+    const { id } = req.params;
+    const { tagId } = req.body;
+
+    const project = await projectsDao.getProjectById({ id });
+
+    if (!project) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        data: "Project not found",
+      });
+    }
+
+    const tag = await tagsDao.getTagById({ id: tagId });
+
+    if (!tag) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        data: "Tag not found",
+      });
+    }
+
+    await projectsDao.addTag({ project, tag });
+
+    res.status(200).json({
+      status: "success",
+      code: 200,
+      data: "Tag added",
+    });
+  },
+
+  removeTag: async (req, res) => {
+    const { id, tagId } = req.params;
+
+    const project = await projectsDao.getProjectById({ id });
+
+    if (!project) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        data: "Project not found",
+      });
+    }
+
+    const tag = await tagsDao.getTagById({ id: tagId });
+
+    if (!tag) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        data: "Tag not found",
+      });
+    }
+
+    const result = await projectsDao.removeTag({ project, tag });
+
+    const historyTag = await tagsDao.getTagWithProjectById({ id: tagId });
+
+    let autoremoved = false;
+
+    if (historyTag.Projects.length === 0) {
+      await tagsDao.deleteTag({ id: tagId });
+      autoremoved = true;
+    }
+
+    let data = "";
+
+    if (autoremoved) {
+      data += "Tag autodeleted. "
+    }
+
+    if (result === 0) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        data: data + "Tag was not removed because it was not added.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      code: 200,
+      data: data + "Tag removed",
+    });
+  },
+
   createProject: async (req, res) => {
     const { name, description, imageURL, demoLink, codeLink } = req.body;
 
@@ -45,7 +134,13 @@ module.exports = {
       });
     }
 
-    await projectsDao.createProject({ name, description, imageURL, demoLink, codeLink });
+    await projectsDao.createProject({
+      name,
+      description,
+      imageURL,
+      demoLink,
+      codeLink,
+    });
     res.status(200).json({
       status: "success",
       code: 200,
@@ -55,7 +150,10 @@ module.exports = {
   updateProject: async (req, res) => {
     const { id } = req.params;
     const { name, description, imageURL, demoLink, codeLink } = req.body;
-    const project = await projectsDao.updateProject({ name, description, imageURL, demoLink, codeLink }, { id });
+    const project = await projectsDao.updateProject(
+      { name, description, imageURL, demoLink, codeLink },
+      { id }
+    );
 
     if (project[0] !== 0) {
       return res

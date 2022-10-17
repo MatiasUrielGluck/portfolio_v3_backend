@@ -21,6 +21,14 @@ module.exports = {
     });
   },
 
+  addTag: async ({ project, tag }) => {
+    return await project.addTag(tag)
+  },
+
+  removeTag: async ({ project, tag }) => {
+    return await project.removeTag(tag)
+  },
+
   createProject: async ({ name, description, imageURL, demoLink, codeLink }) => {
     return await projectsModel.create({ name, description, imageURL, demoLink, codeLink });
   },
