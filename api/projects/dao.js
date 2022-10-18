@@ -1,8 +1,14 @@
 const projectsModel = require("./model");
+const Tag = require("../tags/model");
 
 module.exports = {
   getProjects: async () => {
-    return await projectsModel.findAll();
+    return await projectsModel.findAll({
+      include: {
+        model: Tag,
+        nested: true,
+      },
+    });
   },
 
   getProjectById: async ({ id }) => {
@@ -22,18 +28,33 @@ module.exports = {
   },
 
   addTag: async ({ project, tag }) => {
-    return await project.addTag(tag)
+    return await project.addTag(tag);
   },
 
   removeTag: async ({ project, tag }) => {
-    return await project.removeTag(tag)
+    return await project.removeTag(tag);
   },
 
-  createProject: async ({ name, description, imageURL, demoLink, codeLink }) => {
-    return await projectsModel.create({ name, description, imageURL, demoLink, codeLink });
+  createProject: async ({
+    name,
+    description,
+    imageURL,
+    demoLink,
+    codeLink,
+  }) => {
+    return await projectsModel.create({
+      name,
+      description,
+      imageURL,
+      demoLink,
+      codeLink,
+    });
   },
 
-  updateProject: async ({ name, description, imageURL, demoLink, codeLink }, { id }) => {
+  updateProject: async (
+    { name, description, imageURL, demoLink, codeLink },
+    { id }
+  ) => {
     return await projectsModel.update(
       { name, description, imageURL, demoLink, codeLink },
       {
