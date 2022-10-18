@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("./controller.js");
+const checkToken = require("../../middlewares/checkToken");
 
-router.get("/", controller.getSkills);
-router.post("/", controller.createSkill);
+router.get("/", controller.getSkills); // Public
+router.post("/", [checkToken], controller.createSkill); // Admin
 
-router.get("/:id", controller.getSkill);
-router.patch("/:id", controller.updateSkill)
-router.delete("/:id", controller.deleteSkill);
+router.get("/:id", controller.getSkill); // Public
+router.patch("/:id", [checkToken], controller.updateSkill) // Admin
+router.delete("/:id", [checkToken], controller.deleteSkill); // Admin
 
 module.exports = router;

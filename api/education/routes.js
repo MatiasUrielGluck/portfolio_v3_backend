@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("./controller.js");
+const checkToken = require("../../middlewares/checkToken");
 
-router.get("/", controller.getAllEducation);
-router.post("/", controller.createEducation);
+router.get("/", controller.getAllEducation); // Public
+router.post("/", [checkToken], controller.createEducation); // Admin
 
-router.get("/:id", controller.getEducation);
-router.patch("/:id", controller.updateEducation)
-router.delete("/:id", controller.deleteEducation);
+router.get("/:id", controller.getEducation); // Public
+router.patch("/:id", [checkToken], controller.updateEducation); // Admin
+router.delete("/:id", [checkToken], controller.deleteEducation); // Admin
 
 module.exports = router;

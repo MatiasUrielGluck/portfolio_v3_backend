@@ -1,19 +1,34 @@
+// Express
 const express = require("express");
 const app = express();
 
+// CORS
+var cors = require('cors')
+app.use(cors())
+
+// ENV
+require('dotenv').config()
+
+// Database
 const sequelize = require("./services/database");
-const router = require("./routes");
+
+// Routes
+const apiRouter = require("./routes/api");
+const authRouter = require("./routes/auth");
 
 const associateModels = require('./api/associations')
 
-const port = 3000;
+const port = process.env.PORT;
 
+// Other Middlewares
 app.use(express.json())
 
 associateModels()
 
-app.use("/api", router);
+app.use("/api", apiRouter);
+app.use("/auth", authRouter);
 
+// 
 app.listen(port, async () => {
   console.log(`Listening on port ${port}...`);
 
