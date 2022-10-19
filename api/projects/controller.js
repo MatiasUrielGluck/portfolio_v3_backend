@@ -167,23 +167,46 @@ module.exports = {
 
   updateProject: async (req, res) => {
     const { id } = req.params;
-    const { name, description, imageURL, demoLink, codeLink } = req.body;
-    const project = await projectsDao.updateProject(
-      { name, description, imageURL, demoLink, codeLink },
-      { id }
-    );
+    const { name, description, image, demoLink, codeLink } = req.body;
 
-    if (project[0] !== 0) {
-      return res
-        .status(200)
-        .json({ status: "success", code: 200, data: "Project updated" });
+    try {
+      const cloudinaryResult = await cloudinary.uploader.upload(image, {
+        folder: "portfolio",
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+      });
+
+      const project = await projectsDao.updateProject(
+        {
+          name,
+          description,
+          imageURL: cloudinaryResult.secure_url,
+          demoLink,
+          codeLink,
+        },
+        { id }
+      );
+
+      if (project[0] !== 0) {
+        return res
+          .status(200)
+          .json({ status: "success", code: 200, data: "Project updated" });
+      }
+
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        data: "Project not found or not updated",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({
+        status: "error",
+        code: 500,
+        data: "INTERNAL ERROR CONTACT THE ADMIN",
+      });
     }
-
-    return res.status(404).json({
-      status: "error",
-      code: 404,
-      data: "Project not found or not updated",
-    });
   },
 
   deleteProject: async (req, res) => {
