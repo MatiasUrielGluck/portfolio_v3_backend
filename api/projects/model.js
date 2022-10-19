@@ -14,7 +14,7 @@ const Project = sequelize.define(
     },
     
     imageURL: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT('medium'),
     },
     
     demoLink: {

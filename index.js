@@ -27,7 +27,7 @@ const associateModels = require("./api/associations");
 const port = process.env.PORT;
 
 // Other Middlewares
-app.use(express.json());
+app.use(express.json({ limit: '2MB' }));
 
 associateModels();
 
