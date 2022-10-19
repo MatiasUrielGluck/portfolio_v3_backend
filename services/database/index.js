@@ -7,7 +7,9 @@ const sequelize = new Sequelize(
     database.password,
     {
         host: database.host,
-        dialect: database.dialect
+        dialect: database.dialect,
+
+        logging: false
     }
 )
 

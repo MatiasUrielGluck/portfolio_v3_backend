@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const adminUsersDao = require("./dao");
-const { genJWT } = require("../helpers/jwt");
+const { genJWT, checkJWT } = require("../helpers/jwt");
 
 module.exports = {
   login: async (req, res) => {
@@ -32,8 +32,27 @@ module.exports = {
       status: "success",
       code: 200,
       data: {
+        username: user.username,
         token,
       },
+    });
+  },
+
+  validateToken: (req, res) => {
+    const { token } = req.body;
+    const result = checkJWT(token);
+    if (result.status === "error") {
+      return res.status(403).json({
+        status: "error",
+        code: 403,
+        data: "Corrupt token",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      code: 200,
+      data: result,
     });
   },
 

@@ -1,7 +1,7 @@
 const { checkJWT } = require("../helpers/jwt");
 
 const checkToken = (req, res, next) => {
-  const { token } = req.body;
+  const token = req.header('x-token');
 
   if (!token) {
     return res.status(403).json({

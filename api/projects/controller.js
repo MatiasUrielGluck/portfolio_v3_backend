@@ -1,3 +1,4 @@
+const cloudinary = require("../../services/cloudinary");
 const projectsDao = require("./dao");
 const tagsDao = require("../tags/dao");
 
@@ -104,7 +105,7 @@ module.exports = {
     let data = "";
 
     if (autoremoved) {
-      data += "Tag autodeleted. "
+      data += "Tag autodeleted. ";
     }
 
     if (result === 0) {
@@ -123,28 +124,45 @@ module.exports = {
   },
 
   createProject: async (req, res) => {
-    const { name, description, imageURL, demoLink, codeLink } = req.body;
+    // const { name, description, imageURL, demoLink, codeLink } = req.body;
+    const { name, description, image, demoLink, codeLink } = req.body;
 
-    const existingProject = await projectsDao.getProjectByName({ name });
-    if (existingProject) {
+    try {
+      const cloudinaryResult = await cloudinary.uploader.upload(image, {
+        folder: "portfolio",
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+      });
+
+      const existingProject = await projectsDao.getProjectByName({ name });
+      if (existingProject) {
+        return res.status(403).json({
+          status: "error",
+          code: 403,
+          data: "The project already exists in the database",
+        });
+      }
+
+      await projectsDao.createProject({
+        name,
+        description,
+        imageURL: cloudinaryResult.secure_url,
+        demoLink,
+        codeLink,
+      });
+      res.status(200).json({
+        status: "success",
+        code: 200,
+      });
+    } catch (error) {
+      console.log(error);
       return res.status(403).json({
         status: "error",
-        code: 403,
-        data: "The project already exists in the database",
+        code: 500,
+        data: "INTERNAL ERROR CONTACT THE ADMIN",
       });
     }
-
-    await projectsDao.createProject({
-      name,
-      description,
-      imageURL,
-      demoLink,
-      codeLink,
-    });
-    res.status(200).json({
-      status: "success",
-      code: 200,
-    });
   },
 
   updateProject: async (req, res) => {
