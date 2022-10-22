@@ -6,9 +6,8 @@ const app = express();
 var cors = require("cors");
 app.use(
   cors({
-    // origin: process.env.LOCALHOST,
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_ORIGIN,
   })
 );
 
@@ -26,8 +25,6 @@ const utilsRouter = require("./routes/utils");
 // Models
 const associateModels = require("./api/associations");
 
-const port = 3000 || process.env.PORT;
-
 // Other Middlewares
 app.use(express.json({ limit: '50MB' }));
 
@@ -38,8 +35,8 @@ app.use("/auth", authRouter);
 app.use("/utils", utilsRouter);
 
 //
-app.listen(port, async () => {
-  console.log(`Listening on port ${port}...`);
+app.listen(process.env.PORT, async () => {
+  console.log(`Listening on port ${process.env.PORT}...`);
 
   try {
     await sequelize.sync();
