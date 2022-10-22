@@ -21,10 +21,12 @@ const sequelize = require("./services/database");
 // Routes
 const apiRouter = require("./routes/api");
 const authRouter = require("./routes/auth");
+const utilsRouter = require("./routes/utils");
 
+// Models
 const associateModels = require("./api/associations");
 
-const port = process.env.PORT;
+const port = 3000 || process.env.PORT;
 
 // Other Middlewares
 app.use(express.json({ limit: '50MB' }));
@@ -33,6 +35,7 @@ associateModels();
 
 app.use("/api", apiRouter);
 app.use("/auth", authRouter);
+app.use("/utils", utilsRouter);
 
 //
 app.listen(port, async () => {
