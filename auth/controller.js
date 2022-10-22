@@ -33,6 +33,7 @@ module.exports = {
       code: 200,
       data: {
         username: user.username,
+        approved: user.approved,
         token,
       },
     });
