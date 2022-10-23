@@ -4,12 +4,21 @@ const app = express();
 
 // CORS
 var cors = require("cors");
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.FRONTEND_ORIGIN,
-  })
-);
+
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: process.env.FRONTEND_ORIGIN,
+//   })
+// );
+
+app.use(cors(corsOptions));
 
 // ENV
 require("dotenv").config();
@@ -26,7 +35,7 @@ const utilsRouter = require("./routes/utils");
 const associateModels = require("./api/associations");
 
 // Other Middlewares
-app.use(express.json({ limit: '50MB' }));
+app.use(express.json({ limit: "50MB" }));
 
 associateModels();
 
