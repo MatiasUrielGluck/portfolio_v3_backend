@@ -1,6 +1,7 @@
-const { Sequelize } = require('sequelize')
-const { database } = require('../../config')
+const { Sequelize } = require("sequelize");
+const { database } = require("../../config");
 
+/*
 const sequelize = new Sequelize(
     database.database,
     database.username,
@@ -12,5 +13,8 @@ const sequelize = new Sequelize(
         logging: false
     }
 )
+*/
 
-module.exports = sequelize
+const sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
+
+module.exports = sequelize;
