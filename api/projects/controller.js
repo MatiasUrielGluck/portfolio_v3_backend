@@ -4,7 +4,10 @@ const tagsDao = require("../tags/dao");
 
 module.exports = {
   getProjects: async (req, res) => {
-    const projects = await projectsDao.getProjects();
+    let projects = await projectsDao.getProjects();
+
+    projects.sort((a, b) => (a.position > b.position) ? 1 : -1); // NO ANDA
+
     res.status(200).json({
       status: "success",
       code: 200,
@@ -167,23 +170,30 @@ module.exports = {
 
   updateProject: async (req, res) => {
     const { id } = req.params;
-    const { name, description, image, demoLink, codeLink } = req.body;
+    const { name, description, image, demoLink, codeLink, position } = req.body;
 
     try {
-      const cloudinaryResult = await cloudinary.uploader.upload(image, {
-        folder: "portfolio",
-        use_filename: true,
-        unique_filename: false,
-        overwrite: true,
-      });
+      let cloudinaryResult;
+      let imageURL = image;
+      if (image) {
+        cloudinaryResult = await cloudinary.uploader.upload(image, {
+          folder: "portfolio",
+          use_filename: true,
+          unique_filename: false,
+          overwrite: true,
+        });
+
+        imageURL = cloudinaryResult.secure_url;
+      }
 
       const project = await projectsDao.updateProject(
         {
           name,
           description,
-          imageURL: cloudinaryResult.secure_url,
+          imageURL,
           demoLink,
           codeLink,
+          position,
         },
         { id }
       );

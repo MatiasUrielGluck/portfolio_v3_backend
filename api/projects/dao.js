@@ -52,11 +52,11 @@ module.exports = {
   },
 
   updateProject: async (
-    { name, description, imageURL, demoLink, codeLink },
+    { name, description, imageURL, demoLink, codeLink, position },
     { id }
   ) => {
     return await projectsModel.update(
-      { name, description, imageURL, demoLink, codeLink },
+      { name, description, imageURL, demoLink, codeLink, position },
       {
         where: { id: id },
       }

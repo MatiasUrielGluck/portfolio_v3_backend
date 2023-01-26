@@ -12,17 +12,22 @@ const Project = sequelize.define(
     description: {
       type: DataTypes.TEXT,
     },
-    
+
     imageURL: {
-      type: DataTypes.TEXT('medium'),
+      type: DataTypes.TEXT("medium"),
     },
-    
+
     demoLink: {
       type: DataTypes.STRING,
     },
 
     codeLink: {
       type: DataTypes.STRING,
+    },
+
+    position: {
+      type: DataTypes.INTEGER,
+      unique: true,
     },
   },
   {

@@ -33,6 +33,7 @@ const utilsRouter = require("./routes/utils");
 
 // Models
 const associateModels = require("./api/associations");
+const { port } = require("./config");
 
 // Other Middlewares
 app.use(express.json({ limit: "50MB" }));
@@ -44,8 +45,8 @@ app.use("/auth", authRouter);
 app.use("/utils", utilsRouter);
 
 //
-app.listen(process.env.PORT, async () => {
-  console.log(`Listening on port ${process.env.PORT}...`);
+app.listen(port, async () => {
+  console.log(`Listening on port ${port}...`);
 
   try {
     await sequelize.sync();
