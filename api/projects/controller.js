@@ -6,7 +6,7 @@ module.exports = {
   getProjects: async (req, res) => {
     let projects = await projectsDao.getProjects();
 
-    projects.sort((a, b) => (a.position > b.position) ? 1 : -1); // NO ANDA
+    projects.sort((a, b) => (a.position > b.position) ? 1 : -1);
 
     res.status(200).json({
       status: "success",

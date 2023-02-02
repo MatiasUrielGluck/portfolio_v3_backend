@@ -48,6 +48,7 @@ module.exports = {
       imageURL,
       demoLink,
       codeLink,
+      position: projectsModel.length + 1,
     });
   },
 
